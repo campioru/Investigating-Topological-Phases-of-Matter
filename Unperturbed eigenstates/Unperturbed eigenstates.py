@@ -135,7 +135,7 @@ for m, m_ in enumerate(ms):
         ax[1].scatter(alphas, vals[m], s=1., color=colours[m],
                       label=r"m = %s t" % m_)
 fig.legend(loc="center left", bbox_to_anchor=(1, .5))
-# fig.savefig("Eigenvalues.pdf")
+# fig.savefig("Eigenvalues.pdf", bbox_inches="tight")
 del fig, ax
 
 
