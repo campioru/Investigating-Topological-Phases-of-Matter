@@ -95,6 +95,7 @@ def edge_bulk(Lx, Ly):
     return edge_ind, bulk_ind, edge_pos, bulk_pos.astype
 
 
+# initialising system parameters
 Lx = 20
 Ly = 20
 LxLy2 = 2*Lx*Ly
@@ -115,12 +116,13 @@ colours = ["r",
            "violet",
            "dimgray"]
 
+# calculating h0 and its eigenvalues for each m
 for m in range(len(ms)):
     h0s[m] = h_QWZ(Lx, Ly, 0., ms[m], 1., 1.)
     vals[m], vecs[m] = eigen(h0s[m])
 
+# plotting the eigenvalues
 fig, ax = plt.subplots(2, 1, figsize=(6, 6), sharex=True,
-                       gridspec_kw={'height_ratios': [1, 1]},
                        constrained_layout=True)
 ax[0].tick_params(labelbottom=False)
 ax[0].set_ylabel(r"$\frac{\omega_\alpha-\omega_0}{t}$")
@@ -139,6 +141,7 @@ fig.legend(loc="center left", bbox_to_anchor=(1, .5))
 del fig, ax
 
 
+# repeating the above but for m = t, 3t
 ms = np.array([1., 3.])
 h0s = np.empty((len(ms), LxLy2, LxLy2), dtype=np.complex_)
 vals = np.empty((len(ms), LxLy2))
@@ -149,6 +152,7 @@ for m in range(len(ms)):
     vals[m], vecs[m] = eigen(h0s[m])
 
 
+# calculating the bulk and edge probabilities for each eigenstate
 probs = (np.abs(vecs)) ** 2.
 edge_ind, bulk_ind, edge_pos, bulk_pos = edge_bulk(20, 20)
 edge_probs = np.empty((np.shape(probs)[0], len(edge_ind), np.shape(probs)[-1]))
@@ -170,6 +174,7 @@ for m in range(len(ms)):
 
 sum_probs = np.concatenate((sum_edge_probs, sum_bulk_probs), axis=1)
 
+# plotting probabilities and corresponding eigenvalues
 fig, ax = plt.subplots(3, 1, figsize=(6, 12), sharex=True,
                        gridspec_kw={'height_ratios': [1.5, 1., 1.5]},
                        constrained_layout=True)
