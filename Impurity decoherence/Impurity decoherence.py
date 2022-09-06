@@ -632,7 +632,7 @@ for D, D_ in enumerate(Deltas):
                 ax[i, T].set_ylim(ax[i, T].get_ylim())
                 ax[i, T].plot(ts_[:2], nu_[:2], color=c)
     fig.suptitle(r"$L=%s$, $\mu=%s$, $\Delta=%s$" % (L_, mu_, D_s))
-    fig.savefig("m, p, T/ m, p, T abs(ν) (L = %s, μ = %s, Δ = %s).pdf" %
+    fig.savefig("m, p, T/m, p, T abs(ν) (L = %s, μ = %s, Δ = %s).pdf" %
                 (L_, mu_, D_))
     for i in range(mp_l):
         for j in range(T_l):
@@ -666,7 +666,7 @@ for D, D_ in enumerate(Deltas):
                 ax[i, T].plot(ts_, nus_[1, L, m, T, mu, p, D, 0],
                               color=colours[T])
     fig.suptitle(r"$L=%s$, $\mu=%s$, $\Delta=%s$" % (L_, mu_, D_s))
-    fig.savefig("m, p, T/ m, p, T θ (L = %s, μ = %s, Δ = %s).pdf" %
+    fig.savefig("m, p, T/m, p, T θ (L = %s, μ = %s, Δ = %s).pdf" %
                 (L_, mu_, D_))
     for i in range(mp_l):
         for j in range(T_l):
@@ -701,7 +701,7 @@ for D, D_ in enumerate(Deltas):
                 ax[i, T].relim()
                 ax[i, T].autoscale(axis="y")
     fig.suptitle(r"$L=%s$, $\mu=%s$, $\Delta=%s$" % (L_, mu_, D_s))
-    fig.savefig("m, p, T/ m, p, T -log(abs(ν)) (L = %s, μ = %s, Δ = %s).pdf" %
+    fig.savefig("m, p, T/m, p, T -log(abs(ν)) (L = %s, μ = %s, Δ = %s).pdf" %
                 (L_, mu_, D_))
     for i in range(mp_l):
         for j in range(T_l):
@@ -746,7 +746,7 @@ for T, T_ in enumerate(Ts):
                 ax[i, D].set_ylim(ax[i, D].get_ylim())
                 ax[i, D].plot(ts_[:2], nu_[:2], color=c)
     fig.suptitle(r"$L=%s$, $T=%s$, $\mu=%s$" % (L_, T_s, mu_))
-    fig.savefig("m, p, Δ/ m, p, Δ abs(ν) (L = %s, T = %s, μ = %s).pdf" %
+    fig.savefig("m, p, Δ/m, p, Δ abs(ν) (L = %s, T = %s, μ = %s).pdf" %
                 (L_, T_, mu_))
     for i in range(mp_l):
         for j in range(D_l):
@@ -778,7 +778,7 @@ for T, T_ in enumerate(Ts):
                 ax[i, D].plot(ts_, nus_[1, L, m, T, mu, p, D, 0],
                               color=colours[D])
     fig.suptitle(r"$L=%s$, $T=%s$, $\mu=%s$" % (L_, T_s, mu_))
-    fig.savefig("m, p, Δ/ m, p, Δ θ (L = %s, T = %s, μ = %s).pdf" %
+    fig.savefig("m, p, Δ/m, p, Δ θ (L = %s, T = %s, μ = %s).pdf" %
                 (L_, T_, mu_))
     for i in range(mp_l):
         for j in range(D_l):
@@ -813,7 +813,7 @@ for T, T_ in enumerate(Ts):
                 ax[i, D].relim()
                 ax[i, D].autoscale(axis="y")
     fig.suptitle(r"$L=%s$, $T=%s$, $\mu=%s$" % (L_, T_s, mu_))
-    fig.savefig("m, p, Δ/ m, p, Δ -log(abs(ν)) (L = %s, T = %s, μ = %s).pdf" %
+    fig.savefig("m, p, Δ/m, p, Δ -log(abs(ν)) (L = %s, T = %s, μ = %s).pdf" %
                 (L_, T_, mu_))
     for i in range(mp_l):
         for j in range(D_l):
@@ -853,7 +853,7 @@ for m, m_ in enumerate(ms):
                 ax[T, D].set_ylim(ax[T, D].get_ylim())
                 ax[T, D].plot(ts_[:2], nu_[:2], color=c)
         fig.suptitle(r"$L=%s$, $m=%s$, $\mu=%s$, %s" % (L_, m_, mu_, pl_))
-        fig.savefig("T, Δ/ T, Δ abs(ν) (L = %s, m = %s, μ = %s, %s).pdf"
+        fig.savefig("T, Δ/T, Δ abs(ν) (L = %s, m = %s, μ = %s, %s).pdf"
                     % (L_, m_, mu_, pl_))
         for i in range(T_l):
             for j in range(D_l):
@@ -880,7 +880,7 @@ for m, m_ in enumerate(ms):
                 ax[T, D].plot(ts_, nus_[1, L, m, T, mu, p, D, 0],
                               color=colours[D])
         fig.suptitle(r"$L=%s$, $m=%s$, $\mu=%s$, %s" % (L_, m_, mu_, pl_))
-        fig.savefig("T, Δ/ T, Δ θ (L = %s, m = %s, μ = %s, %s).pdf" %
+        fig.savefig("T, Δ/T, Δ θ (L = %s, m = %s, μ = %s, %s).pdf" %
                     (L_, m_, mu_, pl_))
         for i in range(T_l):
             for j in range(D_l):
@@ -909,7 +909,7 @@ for m, m_ in enumerate(ms):
                 ax[T, D].relim()
                 ax[T, D].autoscale(axis="y")
         fig.suptitle(r"$L=%s$, $m=%s$, $\mu=%s$, %s" % (L_, m_, mu_, pl_))
-        fig.savefig("T, Δ/ T, Δ -log(abs(ν)) (L = %s, m = %s, μ = %s, %s).pdf"
+        fig.savefig("T, Δ/T, Δ -log(abs(ν)) (L = %s, m = %s, μ = %s, %s).pdf"
                     % (L_, m_, mu_, pl_))
         for i in range(T_l):
             for j in range(D_l):
