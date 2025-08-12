@@ -15,40 +15,27 @@ parameters (here the final time of each array depends on the coupling strength
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.lines import Line2D
-import copy
 import sys
 sys.path.append("../")
 from my_functions import h_QWZ
+import itertools as it
 
 
 # initialising system parameters
 lengths = np.linspace(3, 29, 14, dtype=int)
 ms = np.array([1., 3.])
 Ts, Deltas = (10. ** np.linspace(-4., 1., 11) for _ in range(2))
-T_strings, Delta_strings = ([r"10^{-4}",
-                             r"10^{-3.5}",
-                             r"10^{-3}",
-                             r"10^{-2.5}",
-                             r"10^{-2}",
-                             r"10^{-1.5}",
-                             r"10^{-1}",
-                             r"10^{-0.5}",
-                             r"10^{0}",
-                             r"10^{0.5}",
-                             r"10^{1}"] for _ in range(2))
+T_strings, Delta_strings = ([r"10^{" + f"{pow}" + r"}" for pow in [
+    "-4", "-3.5", "-3", "-2.5", "-2", "-1.5", "-1", "-0.5", "0", "0.5", "1"
+    ]] for _ in range(2))
 mus = np.array([0.])
 places = ["corner", "edge", "centre"]
-poss = np.empty((len(lengths), len(places)), dtype=int)
-for L in range(len(lengths)):
-    poss[L] = np.array([0, (lengths[L]-1)/2,
-                        ((lengths[L]-1)/2)*lengths[L] + (lengths[L]-1)/2])
+imp_index = np.array([np.zeros(len(lengths)), (lengths-1) // 2,
+                      ((lengths-1)//2) * (lengths+1)]).T
 scales = ["linear", "log"]
 t_nos = 201
-ts = np.empty((len(Deltas), len(scales), t_nos))
-for D in range(len(Deltas)):
-    last = 20./Deltas[D]
-    ts[D, 0] = np.linspace(0., last, t_nos)
-    ts[D, 1] = 10.**np.linspace(-1., np.log10(last), t_nos)
+ts = np.array([[np.linspace(0., last, t_nos), np.geomspace(.1, last, t_nos)]
+               for last in 20. / Deltas])
 nus = np.empty((len(lengths),
                 len(ms),
                 len(Ts),
@@ -56,7 +43,7 @@ nus = np.empty((len(lengths),
                 len(places),
                 len(Deltas),
                 len(scales),
-                t_nos), dtype=np.complex_)
+                t_nos), dtype=np.complex128)
 colours = ["r",
            "darkorange",
            "y",
@@ -76,8 +63,6 @@ styles = ["solid", "dashed"]
 for L, L_ in enumerate(lengths):
     LxLy = L_**2
     LxLy2 = 2*LxLy
-    SeiEtM, e_iDtMdag = (np.empty((LxLy2, LxLy2), dtype=np.complex_) for _
-                         in range(2))
     for m, m_ in enumerate(ms):
         h0 = h_QWZ(L_, L_, 0., m_, 1., 1.)
         h0_vals, U = np.linalg.eig(h0)
@@ -86,8 +71,8 @@ for L, L_ in enumerate(lengths):
         Udag = U.T.conj()
         del U
         for p, pl_ in enumerate(places):
-            p_ = poss[L, p]
-            h1 = copy.copy(h0)
+            p_ = imp_index[L, p]
+            h1 = h0.copy()
             for D, D_ in enumerate(Deltas):
                 h1[p_, p_] = h0[p_, p_] + D_
                 h1[p_ + LxLy, p_ + LxLy] = h0[p_ + LxLy, p_ + LxLy] + D_
@@ -95,27 +80,19 @@ for L, L_ in enumerate(lengths):
                 e_iD_diag = np.exp((-1j) * np.real(h1_vals))
                 M = np.dot(Udag, W)
                 del W
-                Mdag = M.T.conj()
-                for T, T_ in enumerate(Ts):
-                    for mu, mu_ in enumerate(mus):
-                        S_diag = (1. + np.exp((h0_vals - mu_) / T_)) ** (-1.)
-                        I_S_diag = 1. - S_diag
-                        for s, s_ in enumerate(scales):
-                            for t in range(t_nos):
-                                t_ = ts[s, D, t]
-                                for i in range(LxLy2):
-                                    SeiEtM[i, :] = (
-                                        S_diag[i] * eiE_diag[i]**t_ * M[i, :])
-                                    e_iDtMdag[i, :] = (
-                                        e_iD_diag[i]**t_ * Mdag[i, :])
-                                final = np.dot(SeiEtM, e_iDtMdag)
-                                for i in range(LxLy2):
-                                    final[i, i] += I_S_diag[i]
-                                nus[L, m, T, mu, p, D, s, t] = np.linalg.det(
-                                    final)
+                for (T, T_), (mu, mu_) in it.product(enumerate(Ts),
+                                                     enumerate(mus)):
+                    S_diag = 1. / (1. + np.exp((h0_vals - mu_) / T_))
+                    for (s, s_), t in it.product(enumerate(scales),
+                                                 range(t_nos)):
+                        t_ = ts[s, D, t]
+                        nus[L, m, T, mu, p, D, s, t] = np.linalg.det(
+                            np.dot(
+                                (S_diag * eiE_diag**t_)[:, None] * M,
+                                e_iD_diag[:, None]**t_ * M.T.conj()
+                                ) + np.diag(1. - S_diag))
                         print(L_, m_, pl_, D_, T_, mu_, s_)
-del (LxLy, LxLy2, SeiEtM, e_iDtMdag, h0, h0_vals, Udag, eiE_diag, h1, h1_vals,
-     M, e_iD_diag, Mdag, I_S_diag, final)
+del (h0, Udag, h1)
 
 # defining an array consisting of |ν|, θ, and -log|ν| for plotting convenience
 nus_ = np.empty(((3,) + np.shape(nus)))
